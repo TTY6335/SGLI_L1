@@ -6,7 +6,7 @@ import os, sys
 import tifffile
 
 input_dir='./'
-input_file='GC1SG1_201904061259G27117_1BSG_VNRDK_1004.h5'
+input_file='L1B_VNR_NP_DATA.h5'
 input_data=input_dir+input_file
 
 f=h5py.File(input_data,'r')
