@@ -14,12 +14,11 @@ f=h5py.File(input_data,'r')
 lat_arr=np.array(f['Geometry_data']['Latitude'])
 lon_arr=np.array(f['Geometry_data']['Longitude'])
 
-#GCPのメモをつくる。gdal_translateでつかうことになる。
+#GCPのメモをつくる。gdal_translateでつかう。
 memo="gcp_memo.txt"
 txt=open(memo,'w')
-for column in range(0,lat_arr.shape[0]-1,10):
-    for row in range(0,lat_arr.shape[1]-1,10): 
-#        print(column*10,row*10,lat_arr[column][row],lon_arr[column][row])
+for column in range(0,lat_arr.shape[0],10):
+    for row in range(0,lat_arr.shape[1],10): 
         txt.write("-gcp "+str(row*10)+" "+str(column*10)+" "+str(lon_arr[column][row])+" "+str(lat_arr[column][row])+"\n")
 txt.close()
 
