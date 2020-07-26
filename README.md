@@ -11,7 +11,7 @@ JAXA GCOM-C SGLIのLevel 1のHDF5ファイルをgeotiffに変換と地図投影�
 
 
 # 使い方
-`python3 L1.py path_to_L1.h5 path_to_out.tif`
+`python3 L1.py path_to_L1.h5 path_to_out.tif`  
 RGBカラーに対応するRV03,RV05,RV08を抜き出して1ファイルにします。 他のバンドを抜き出す方法はwikiを参照してください。
 
 # 注意事項
