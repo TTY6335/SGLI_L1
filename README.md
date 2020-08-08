@@ -9,7 +9,12 @@ JAXA GCOM-C SGLIのLevel 1のHDF5ファイルをgeotiffに変換と地図投影�
 * numpy 1.16.5
 * gdal 1.11.4
 
-# 既知の問題点
+
+# 使い方
+`python3 L1.py path_to_L1.h5 path_to_out.tif`  
+RGBカラーに対応するRV03,RV05,RV08を抜き出して1ファイルにします。 他のバンドを抜き出す方法はwikiを参照してください。
+
+# 注意事項
 gcpを与えるときに標高を考慮していません。
 open street mapなどと比較したとき、海岸線は合うと思いますが、標高の高い地域では位置ずれが発生します。
 SRTMやAW3DなどのDSMから標高データを元に標高データをgcpに与える必要があります。
