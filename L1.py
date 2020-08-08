@@ -10,22 +10,14 @@ if __name__ == '__main__':
 ########################
 #入力するファイルの情報#
 ########################
-#ファイルパス
-
-	input_dir='../'
-#ファイル名
-	input_file='madagascar.h5'
+	input_data=sys.argv[1]
 
 ########################
 #出力するファイルの情報#
 ########################
-#ファイルパス	
-	output_file_path="./"
-#ファイル名
-	output_filename="madagascar_gcp.tif"
+	output_file=sys.argv[2]
 
 	#hdf5のファイルを開く
-	input_data=input_dir+input_file
 	f=h5py.File(input_data,'r')
 
 	lat_arr=np.array(f['Geometry_data']['Latitude'],dtype='float64')
@@ -48,18 +40,17 @@ if __name__ == '__main__':
 		band_image_arr=f['Image_data'][sgli]
 		slope=f['Image_data'][sgli].attrs['Slope']
 		offset=f['Image_data'][sgli].attrs['Offset']
-
 		#numpyの行列にする
 		band_image_arr=np.array(band_image_arr,dtype='uint16')
 		#MSBを0にする
 		band_image_arr=np.where(band_image_arr>=32768,band_image_arr-32768,band_image_arr)
 		#15ビット目を0にする
 		band_image_arr=np.where(band_image_arr>=16384,band_image_arr-16384,band_image_arr)
-		#欠損値をnanで埋める 0で埋めたときよりもgdal_translateの処理が速くなる?
+		#欠損値をnanで埋める 0で埋めたときよりもgdalWarpの処理が速くなる?
 		band_image_arr=np.where(band_image_arr==16383,np.nan,band_image_arr)
 		#大気上端放射輝度を求める
 		Lt=slope*band_image_arr+offset
-		Lt=np.array(Lt,dtype='float64')
+		Lt=np.array(Lt,dtype='float32')
 		rgb_list.append(Lt)
 
 	print(Lt.shape)
@@ -70,8 +61,7 @@ if __name__ == '__main__':
 	col_size=Lt.shape[1]
 
 	#出力
-	dtype = gdal.GDT_Float64
-	output_file=output_file_path+output_filename
+	dtype = gdal.GDT_Float32
 	#バンド数
 	band=3
 	output = gdal.GetDriverByName('GTiff').Create(output_file,col_size,row_size,band,dtype)
@@ -81,7 +71,7 @@ if __name__ == '__main__':
 	wkt = output.GetProjection()
 	output.SetGCPs(gcp_list,wkt)
 	#GCPを使ってEPSG4326に投影変換
-	output = gdal.Warp(output_file, output, dstSRS='EPSG:4326',tps = True,outputType=dtype)
+	output = gdal.Warp(output_file, output, dstSRS='EPSG:4326',tps = True,dstNodata=0,outputType=dtype)
 	output = None 	
 
 
