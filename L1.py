@@ -71,7 +71,7 @@ if __name__ == '__main__':
 	wkt = output.GetProjection()
 	output.SetGCPs(gcp_list,wkt)
 	#GCPを使ってEPSG4326に投影変換
-	output = gdal.Warp(output_file, output, dstSRS='+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs',tps = True,dstNodata=0,outputType=dtype)
+	output = gdal.Warp(output_file, output, dstSRS='+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs',tps = True,dstNodata=-999,outputType=dtype,multithread=True)
 	output = None 	
 
 
