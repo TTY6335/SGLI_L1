@@ -1,4 +1,5 @@
 # coding:utf-8
+#ORIGINAL TTY6335
 #L1B_VNR_NP 可視近赤外（非偏光）をバンド毎にtiffにする
 import h5py
 import numpy as np
