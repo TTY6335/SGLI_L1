@@ -23,13 +23,32 @@ if __name__ == '__main__':
 
 	lat_arr=np.array(f['Geometry_data']['Latitude'],dtype='float64')
 	lon_arr=np.array(f['Geometry_data']['Longitude'],dtype='float64')
-	
+
 	#GCPのリストを作る
 	gcp_list=[]
-	for column in range(0,lat_arr.shape[0],20):
-		for row in range(0,lat_arr.shape[1],20): 
-			gcp=gdal.GCP(lon_arr[column][row],lat_arr[column][row],0,row*10,column*10)
-			gcp_list.append(gcp)
+	#東経180度西経-180度の線を越えていないかチェック
+	top_left_lon=lon_arr[0][0]
+	top_right_lon=lon_arr[0][-1]
+	bottom_left_lon=lon_arr[-1][0]
+	bottom_right_lon=lon_arr[-1][-1]
+
+	#東経180度西経-180度の線をまたぐ場合
+	if((top_left_lon>top_right_lon) or\
+		(top_left_lon>bottom_right_lon) or\
+		(bottom_left_lon>top_right_lon) or\
+		(bottom_left_lon>bottom_right_lon)\
+		):
+		lon_arr=np.where(lon_arr<0,lon_arr+360,lon_arr)
+		for column in range(0,lat_arr.shape[0],20):
+			for row in range(0,lat_arr.shape[1],20): 
+				gcp=gdal.GCP(lon_arr[column][row],lat_arr[column][row],0,row*10,column*10)
+				gcp_list.append(gcp)
+	#東経180度西経-180度の線をまたがない場合
+	else:	
+		for column in range(0,lat_arr.shape[0],20):
+			for row in range(0,lat_arr.shape[1],20): 
+				gcp=gdal.GCP(lon_arr[column][row],lat_arr[column][row],0,row*10,column*10)
+				gcp_list.append(gcp)
 		
 
 #RGBの3バンドだけ抽出する
